@@ -2,9 +2,9 @@ import os
 import requests
 import logging
 from dotenv import load_dotenv
-from typing import Dict, Any
-from pathlib import Path
-import json
+
+
+from utils.load_json import _log_response_data
 
 # Load environment variables
 load_dotenv()
@@ -60,29 +60,5 @@ def _enhance_prompt(api_key: str, prompt: str, **kwargs) -> str:
     except Exception as err:
         logger.error(f"An unexpected error occurred: {err}")
 
-    return prompt
+    return data
 
-def _log_response_data(prompt: str, data: Any):
-    log_file_path = "services/log.json"
-    os.makedirs(os.path.dirname(log_file_path), exist_ok=True)
-    
-    # Generate id based on the length
-    new_id = str(int(os.path.getsize(log_file_path)) + 1 if os.path.exists(log_file_path) else 1)
-
-    # Initializing the format.
-    log_format = {
-        'id': new_id,
-        'userPrompt': prompt,
-        'enhancedPrompt': data
-    }
-
-    try:
-        with open(log_file_path, "a") as f:
-            f.write(json.dumps([log_format], indent=4))
-            f.write("\n")
-            f.close()
-        logger.info(f"Enchancement Done. check {log_file_path}")
-    except json.JSONDecodeError:
-        logger.error(f"Failed to enhance prompt")
-    except Exception as e:
-        logger.error(f"Action faile due to {e}")
