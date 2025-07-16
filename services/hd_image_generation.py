@@ -2,9 +2,10 @@ import requests
 import os
 from dotenv import load_dotenv
 
+from utils.load_json import _log_response_data
+
 load_dotenv()
 
-from utils.load_json import _log_response_data
 
 
 def _hd_image_generation(api_key: str, prompt: str, **kwargs):
@@ -27,7 +28,8 @@ def _hd_image_generation(api_key: str, prompt: str, **kwargs):
     response = requests.post(url, json=payload, headers=headers)
 
     data = response.json()
-
-    _log_response_data(prompt=prompt, data=data, logFileName="HD.json")
+    
+    if data:
+        _log_response_data(prompt=prompt, data=data, logFileName="HD")
 
     # print(data)
